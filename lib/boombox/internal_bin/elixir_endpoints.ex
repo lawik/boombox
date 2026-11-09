@@ -148,7 +148,23 @@ defmodule Boombox.InternalBin.ElixirEndpoints do
       raise "Got audio and video options set to false. At least one track must be enabled."
     end
 
+    Enum.each([:video_width, :video_height], &validate_video_dimension!(&1, options[&1]))
+
     options
+  end
+
+  # The dimensions are passed to the SWScale scaler, which requires even, positive values;
+  # odd or zero dimensions would otherwise reach the native code unchecked.
+  defp validate_video_dimension!(_key, nil), do: :ok
+
+  defp validate_video_dimension!(_key, value)
+       when is_integer(value) and value > 0 and rem(value, 2) == 0,
+       do: :ok
+
+  defp validate_video_dimension!(key, value) do
+    raise ArgumentError,
+          "Invalid value of the #{inspect(key)} option: #{inspect(value)}. " <>
+            "Expected a positive, even integer."
   end
 
   defp audio_output_format(%{audio_format: format, audio_rate: rate, audio_channels: channels}) do

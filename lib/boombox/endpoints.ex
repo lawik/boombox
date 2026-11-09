@@ -102,7 +102,7 @@ defmodule Boombox.Endpoints do
   * `{:audio_channels, channels}` - Number of channels in the produced audio
     stream. Channels are interleaved.
   * `{:video_width, width}`, `{:video_height, height}` - Dimensions of the
-    produced video stream.
+    produced video stream. Both must be positive, even integers.
   * `{:pace_control, value}` - If `true`, the incoming streams are passed to
     the output according to their timestamps. If `false`, they are passed as
     fast as possible. `true` by default.
@@ -113,8 +113,8 @@ defmodule Boombox.Endpoints do
           | {:audio_format, Membrane.RawAudio.SampleFormat.t()}
           | {:audio_rate, Membrane.RawAudio.sample_rate_t()}
           | {:audio_channels, Membrane.RawAudio.channels_t()}
-          | {:video_width, non_neg_integer()}
-          | {:video_height, non_neg_integer()}
+          | {:video_width, pos_integer()}
+          | {:video_height, pos_integer()}
           | {:pace_control, boolean()}
 
   @typedoc """
